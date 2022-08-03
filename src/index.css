@@ -11,3 +11,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@font-face {
+  font-family: 'Gamer';
+  src: local('Gamer'), url(./assets/font/PressStart2P-Regular.ttf) format('truetype');
+}
+
