@@ -1,16 +1,35 @@
 import { Button, Grid, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logoSrc from "../../assets/logo.png";
+import GameContext from "../../context/gameContext";
+import { PLAYERS_TYPE } from "../../utils/rules";
 import useStyles from "./styles";
 function Player() {
   const classes = useStyles();
-  const [noOfPlayers, setNoOfPlayer] = useState(2);
+  const { game, setGame } = useContext(GameContext);
+  const { noOfPlayer } = game;
   const [loading, setLoading] = useState(false);
   const [percentage, setPercentage] = useState(0);
   const navigateTo = useNavigate();
   function changePlayerNumber(num) {
-    setNoOfPlayer(num);
+    setGame({
+      ...game,
+      noOfPlayer: num,
+      players: PLAYERS_TYPE.slice(0, num),
+      currentTurn: 0,
+    });
+  }
+  function startGame() {
+    setLoading(!loading);
+    let players = {};
+    game?.players?.forEach((player) => {
+      players = {
+        ...players,
+        [`${player}`]: 0
+      };
+    });
+    setGame({...game, position: players})
   }
   useEffect(() => {
     if (loading && percentage < 100) {
@@ -42,12 +61,12 @@ function Player() {
           </Grid>
           <Grid
             item
-            className={noOfPlayers === 2 ? classes.selected : classes.select}
+            className={noOfPlayer === 2 ? classes.selected : classes.select}
             onClick={() => changePlayerNumber(2)}
           >
             <Typography
               className={
-                noOfPlayers === 2
+                noOfPlayer === 2
                   ? classes.playerTextSelected
                   : classes.playerText
               }
@@ -57,12 +76,12 @@ function Player() {
           </Grid>
           <Grid
             item
-            className={noOfPlayers === 3 ? classes.selected : classes.select}
+            className={noOfPlayer === 3 ? classes.selected : classes.select}
             onClick={() => changePlayerNumber(3)}
           >
             <Typography
               className={
-                noOfPlayers === 3
+                noOfPlayer === 3
                   ? classes.playerTextSelected
                   : classes.playerText
               }
@@ -72,12 +91,12 @@ function Player() {
           </Grid>
           <Grid
             item
-            className={noOfPlayers === 4 ? classes.selected : classes.select}
+            className={noOfPlayer === 4 ? classes.selected : classes.select}
             onClick={() => changePlayerNumber(4)}
           >
             <Typography
               className={
-                noOfPlayers === 4
+                noOfPlayer === 4
                   ? classes.playerTextSelected
                   : classes.playerText
               }
@@ -90,7 +109,7 @@ function Player() {
               color="success"
               variant="contained"
               className={classes.play}
-              onClick={() => setLoading(!loading)}
+              onClick={startGame}
             >
               <p className={classes.playText}>Start</p>
             </Button>

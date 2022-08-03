@@ -54,3 +54,5 @@ export const LADDER_RULES = {
         to: 91,
     },
 }
+
+export const PLAYERS_TYPE = ['red', 'blue', 'green', 'yellow'];

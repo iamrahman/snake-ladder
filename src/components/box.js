@@ -1,10 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { Grid, Typography } from "@mui/material";
 import snake from "../assets/snake.svg";
 import ladder from "../assets/ladder.svg";
-import { LADDER_RULES, LADDER_START_INDEX, SNAKE_RULES, SNAKE_START_INDEX } from "../utils/rules";
+import { LADDER_RULES, LADDER_START_INDEX, PLAYERS_TYPE, SNAKE_RULES, SNAKE_START_INDEX } from "../utils/rules";
 import Coin from "./coin";
-function Box({ index, display, isSnake, isLadder, noOfPlayer, position, setPosition, loading }) {
+import GameContext from "../context/gameContext";
+function Box({ index, display, isSnake, isLadder, loading }) {
+  const { game, setGame, currentTurn } = useContext(GameContext);
+  const { position, noOfPlayer, } = game;
   const getColor = (display) => {
     const mod = display % 2;
     switch (mod) {
@@ -15,12 +18,12 @@ function Box({ index, display, isSnake, isLadder, noOfPlayer, position, setPosit
     }
   };
   useEffect(() => {
-    if(SNAKE_START_INDEX.includes(position.red)) {
-      setPosition({...position, red: SNAKE_RULES[`${position.red}`].to})
-    } else if (LADDER_START_INDEX.includes(position.red)){
-      setPosition({...position, red: LADDER_RULES[`${position.red}`].to})
+    if(SNAKE_START_INDEX.includes(position[PLAYERS_TYPE[currentTurn]])) {
+      setGame({...game, position: {...position, [PLAYERS_TYPE[currentTurn]]: SNAKE_RULES[`${position[PLAYERS_TYPE[currentTurn]]}`].to}})
+    } else if (LADDER_START_INDEX.includes(position[PLAYERS_TYPE[currentTurn]])){
+      setGame({...game, position: {...position, [PLAYERS_TYPE[currentTurn]]: LADDER_RULES[`${position[PLAYERS_TYPE[currentTurn]]}`].to}})
     }
-  }, [position])
+  }, [game.position])
   return (
     <Grid
       container
@@ -77,10 +80,10 @@ function Box({ index, display, isSnake, isLadder, noOfPlayer, position, setPosit
             alignItems="center"
           >
             {" "}
-            {(index === position.red ||
-              index === position.blue ||
-              index === position.green ||
-              index === position.yellow) && <Coin noOfPlayer={noOfPlayer} />}
+            {index === position.red && <Coin noOfPlayer={1} color="red" />}
+            {index === position.blue  && <Coin noOfPlayer={1} color="blue" />}
+            {index === position.green  && <Coin noOfPlayer={1} color="green" />}
+            {index === position.yellow && <Coin noOfPlayer={1} color="yellow" />}
           </Grid>
         )}
       </Grid>

@@ -2,7 +2,7 @@ import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import AvatarGroup from "@mui/material/AvatarGroup";
 
-export default function Coin({ noOfPlayer = 1 }) {
+export default function Coin({ color, noOfPlayer = 1 }) {
   let size = 18;
   switch (noOfPlayer) {
     case 1:
@@ -24,19 +24,19 @@ export default function Coin({ noOfPlayer = 1 }) {
   return (
     <AvatarGroup max={5}>
       {noOfPlayer >= 1 && (
-        <Avatar alt="Red" sx={{ bgcolor: "#cc0000", width: size, height: size }}>
+        <Avatar alt="Red" sx={{ bgcolor: color, width: size, height: size }}>
           {``}
         </Avatar>
       )}
       {noOfPlayer >= 2 && (
-        <Avatar alt="Blue" sx={{ bgcolor: "blue", width: size, height: size }}>
+        <Avatar alt="Blue" sx={{ bgcolor: color, width: size, height: size }}>
           {``}
         </Avatar>
       )}
       {noOfPlayer >= 3 && (
         <Avatar
           alt="Green"
-          sx={{ bgcolor: "yellow", width: size, height: size }}
+          sx={{ bgcolor: color, width: size, height: size }}
         >
           {``}
         </Avatar>
@@ -44,7 +44,7 @@ export default function Coin({ noOfPlayer = 1 }) {
       {noOfPlayer >= 4 && (
         <Avatar
           alt="Yellow"
-          sx={{ bgcolor: "green", width: size, height: size }}
+          sx={{ bgcolor: color, width: size, height: size }}
         >
           {``}
         </Avatar>

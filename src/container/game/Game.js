@@ -1,22 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, Grid, Typography } from "@mui/material";
 import useStyles from "./styles";
 import Box from "../../components/box";
 import { GAME_INDEX } from "../../utils/board";
-import { LADDER_START_INDEX, SNAKE_START_INDEX } from "../../utils/rules";
+import { LADDER_START_INDEX, PLAYERS_TYPE, SNAKE_START_INDEX } from "../../utils/rules";
 import Dice from "../../components/dice";
 import { genrateRandomNum } from "../../utils/func";
+import gameContext from "../../context/gameContext";
 function Game() {
   const classes = useStyles();
+  const { game, setGame } = useContext(gameContext);
+  const { noOfPlayer, players, currentTurn, position  } = game;
+  console.log({game})
   const [diceValue, setDiceValue] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [noOfPlayer, setNoOfPlayer] = useState(1);
-  const [position, setPosition] = useState({
-    red: 0,
-    blue: 0,
-    green: 0,
-    yellow: 0,
-  });
   const rollTheDice = () => {
     const value = genrateRandomNum();
     setDiceValue(value);
@@ -31,14 +28,16 @@ function Game() {
         flag = 1;
       } else {
         setLoading(true);
-        setPosition({...position, red: position.red + flag});
+        setGame({...game, position: {...position, [PLAYERS_TYPE[currentTurn]]: position[PLAYERS_TYPE[currentTurn]] + flag}});
         flag++;
       }
     }
-  }, [diceValue])
+  }, [diceValue]);
+
   useEffect(() => {
     if(!loading) {
-      setDiceValue(0)
+      setDiceValue(0);
+      setGame({...game, currentTurn: game.noOfPlayer === currentTurn+1 ? 0 : currentTurn+1 })
     }
   }, [loading]);
   return (
@@ -52,6 +51,7 @@ function Game() {
       <Grid item xl={3} lg={3} md={12} className={classes.stats}>
         <Typography>Stats</Typography>
         <Dice value={diceValue} />
+        {`Turn : => ` + PLAYERS_TYPE[currentTurn]} <br/>
         <Button variant="contained" color="info" onClick={rollTheDice}>
           Roll
         </Button>
@@ -69,12 +69,9 @@ function Game() {
                 <Box
                   key={box.index}
                   index={box.index}
-                  noOfPlayer={noOfPlayer}
                   display={box.display}
                   isSnake={SNAKE_START_INDEX.includes(box.display)}
                   isLadder={LADDER_START_INDEX.includes(box.display)}
-                  position={position}
-                  setPosition={setPosition}
                   loading={loading}
                 />
               );
